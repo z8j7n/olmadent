@@ -205,11 +205,12 @@ dl.pricelist dt
 	float: left;
 	width: calc(100% - 80px);
 	clear: left;
-	text-align: right;
+	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: normal;
 	font-weight: normal;
+	padding-left: 20px;
 }
 
 dl.pricelist dd
@@ -231,6 +232,86 @@ dl.pricelist-center dd
 	font-weight: bold;
 }
 
+/* New pricelist grid: description (title + optional subtitle) and price aligned to subtitle row */
+.pricelist {
+	width: 100%;
+}
+.pricelist .price-grid {
+	display: grid;
+	grid-template-columns: 1fr 90px;
+	grid-template-rows: auto auto;
+	column-gap: 12px;
+	align-items: start;
+	padding: 6px 0;
+	border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.pricelist .p-title {
+	grid-column: 1 / 2;
+	grid-row: 1 / 2;
+	font-weight: 600;
+}
+.pricelist .p-sub {
+	grid-column: 1 / 2;
+	grid-row: 2 / 3;
+	color: #555;
+	font-style: normal;
+}
+.pricelist .p-price {
+	grid-column: 2 / 3;
+	grid-row: 2 / 3; /* align price with subtitle row */
+	text-align: right;
+	font-weight: bold;
+}
+
+/* If there is no subtitle, keep price on first row by collapsing subtitle spacing */
+.pricelist .p-sub:empty { min-height: 0; }
+
+@media (max-width: 768px) {
+	.pricelist .price-grid {
+		grid-template-columns: 1fr 70px;
+	}
+}
+
+@media (max-width: 480px) {
+	/* On very small screens stack into two rows: title left, price right on same row; subtitle below spanning full width */
+	.pricelist .price-grid {
+		grid-template-columns: 1fr 70px;
+		grid-template-rows: auto;
+		align-items: center;
+	}
+	.pricelist .p-title { grid-row: 1; }
+	.pricelist .p-price { grid-row: 1; }
+	.pricelist .p-sub { grid-column: 1 / -1; grid-row: 2; margin-top: 4px; }
+}
+
+/* Sub-row (secondary price for same service) — visually group under previous item */
+.pricelist .price-grid.sub-row {
+	border-top: none;
+	padding-top: 2px;
+	padding-bottom: 6px;
+	grid-template-rows: auto;
+	align-items: center;
+}
+.pricelist .price-grid.sub-row .p-title { display: none; }
+.pricelist .price-grid.sub-row .p-sub { grid-column: 1 / -1; grid-row: 1; margin-top: 0; font-style: italic; color: #555; }
+.pricelist .price-grid.sub-row .p-price { grid-row: 1; grid-column: 2 / 3; }
+
+/* Remove visible divider between a main item and its following sub-row */
+.pricelist .price-grid.sub-row {
+	margin-top: 0;
+}
+.pricelist .price-grid.no-divider { border-bottom: none; }
+
+/* Ensure subtitle/inline italics in the cennik pricelist render as italic */
+#cennik dl.pricelist dt i,
+#cennik dl.pricelist dt em {
+	font-style: italic !important;
+}
+
+	/* container for pricelist card to allow wider layout without affecting other elements */
+	.pricelist-card { width: 100%; max-width: 740px; margin-left: auto; margin-right: auto; }
+
+
 .card
 {
 	padding: 8px 8px 8px 8px;
@@ -247,12 +328,62 @@ dl.pricelist-center dd
 	color: #333;
 }
 
+/* Styles moved from index.html */
+dl.pricelist.pricelist-wider dd {
+    margin-left: calc(100% - 90px);
+}
+
+dl.pricelist.pricelist-wider dt {
+    width: calc(100% - 100px);
+}
+
+/* Larger Cennik styles (scoped to #cennik) */
+#cennik h2 { font-size: 52px; line-height: 1.05; }
+#cennik .card { padding: 26px 26px; }
+#cennik dl.pricelist dt { font-size: 26px; padding-left: 12px; }
+#cennik dl.pricelist dd { font-size: 26px; margin-left: calc(100% - 70px); }
+@media (max-width: 768px) {
+	#cennik h2 { font-size: 39px; }
+	#cennik dl.pricelist dt, #cennik dl.pricelist dd { font-size: 24px; }
+}
+
+/* Mobile adjustments: fix pricelist alignment and add spacing for header images */
+@media (max-width: 768px) {
+	/* Make pricelist labels stack and prices align right for header images only
+	   (do not affect the #cennik pricelist layout) */
+	#wstep dl.pricelist dt {
+		float: none;
+		width: 100%;
+		clear: none;
+		text-align: left;
+		padding-left: 0;
+		margin-bottom: 6px;
+	}
+	#wstep dl.pricelist dd {
+		margin-left: 0;
+		padding-top: 0 !important;
+		padding-bottom: 12px;
+		font-weight: bold;
+		text-align: right;
+		padding-right: 15px;
+	}
+
+	/* Ensure special wider pricelist also stacks nicely */
+	dl.pricelist.pricelist-wider dd {
+		margin-left: 0;
+	}
+
+	/* Add vertical spacing between header images (those in /images/header) when stacked */
+	#wstep img[src*="images/header/"] {
+		margin-bottom: 12px;
+	}
+}
 
 @media (max-width: 768px)
 {
 	.mobile-fixedwidth
 	{
-		max-width: 350px;
+		max-width: 560px;
 		margin-left: auto;
 		margin-right: auto;
 	}
@@ -333,6 +464,29 @@ dl.pricelist-center dd
 	{
 		font-size: 20px;
 		line-height: 26px;
+	}
+}
+
+@media (max-width: 600px) {
+	/* Header images: compact grid thumbnails on small screens */
+	/* Make the columns behave as 50% tiles so images form a grid (2 columns) */
+	#wstep .row { margin-left: -6px; margin-right: -6px; }
+	#wstep .row > .col-sm-6 {
+		width: 50%;
+		float: left;
+		padding-left: 6px;
+		padding-right: 6px;
+		box-sizing: border-box;
+	}
+
+	/* Restrict image size so they become much smaller thumbnails */
+	#wstep img[src*="images/header/"] {
+		width: 100%;
+		max-width: 160px;
+		height: auto;
+		display: block;
+		margin: 6px auto 10px;
+		border-radius: 4px;
 	}
 }
 

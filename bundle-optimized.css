@@ -19078,11 +19078,12 @@ dl.pricelist dt
 	float: left;
 	width: calc(100% - 80px);
 	clear: left;
-	text-align: right;
+	text-align: left;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: normal;
 	font-weight: normal;
+	padding-left: 20px;
 }
 
 dl.pricelist dd
@@ -19118,6 +19119,31 @@ dl.pricelist-center dd
 	line-height: 14px;
 	padding-top: 10px;
 	color: #333;
+}
+
+/* Cennik section styles moved from index.html */
+#cennik h2 {
+  font-size: 52px;
+  line-height: 1.05;
+}
+#cennik .card {
+  padding: 26px 26px;
+}
+#cennik dl.pricelist dt {
+  font-size: 26px;
+  padding-left: 12px;
+}
+#cennik dl.pricelist dd {
+  font-size: 26px;
+  margin-left: calc(100% - 70px);
+}
+@media (max-width: 768px) {
+  #cennik h2 {
+    font-size: 39px;
+  }
+  #cennik dl.pricelist dt, #cennik dl.pricelist dd {
+    font-size: 24px;
+  }
 }
 
 
